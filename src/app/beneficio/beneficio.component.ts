@@ -9,6 +9,8 @@ import { BeneficioService } from '../beneficio.service';
 })
 export class BeneficioComponent implements OnInit {
 
+  mask = [' ', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, ',', /\d/, /\d/];
+  //mask = ['R$ ', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, ',', /\d/, /\d/ ];
   beneficio: Beneficio = new Beneficio(0, 0, "", 0, 0);
   message: any;
 

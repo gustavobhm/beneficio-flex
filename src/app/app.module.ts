@@ -6,6 +6,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BeneficioService } from './beneficio.service';
 import { BeneficioComponent } from './beneficio/beneficio.component';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { TextMaskModule } from 'angular2-text-mask';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,9 @@ import { BeneficioComponent } from './beneficio/beneficio.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    TextMaskModule,
+    MDBBootstrapModule.forRoot()
   ],
   providers: [BeneficioService],
   bootstrap: [AppComponent]
