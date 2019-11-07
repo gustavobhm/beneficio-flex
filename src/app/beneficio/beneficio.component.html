@@ -7,35 +7,80 @@
 
 
 <div class="container">
+
+    <div class="row p-4 justify-content-center">
+        <div class="col-md-auto">
+            <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
+                alt="Responsive image" width="350">
+        </div>
+    </div>
+
     <div class="card">
+
         <div class="card-header card-header-primary">
             <h4 class="card-title">Benefício Flex</h4>
-            <p class="card-category">Cremesp</p>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-sm-8">
-                    <div class="form-group">
-                        <input type="text" value="" placeholder="Nome do solicitante ..." class="form-control" />
-                    </div>
-                </div>
 
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <input type="text" value="" placeholder="Valor utilizado ..." class="form-control" />
+        <div class="card-body">
+
+            <div class="row p-2">
+                <div class="input-group col-sm-11">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="far fa-user"></i>
+                        </span>
                     </div>
+                    <input type="text" value="" placeholder="Nome do solicitante ..." class="form-control" autofocus />
+                </div>
+            </div>
+
+            <div class="row p-2">
+                <div class="input-group col-sm-11">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="far fa-address-card"></i>
+                        </span>
+                    </div>
+                    <select class="form-control selectpicker" data-style="btn btn-link" id="select"
+                        [ngStyle]="{'color': colorStyle}" (change)="onOptionsSelected($event)">
+                        <option value="" disabled selected hidden>Seção do solitante ...</option>
+                        <option value="1">Tecnologia da Informação</option>
+                        <option value="2">Seção de Sindicâncias</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row p-2">
+                <div class="input-group col-sm-5">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fas fa-dollar-sign"></i>
+                        </span>
+                    </div>
+                    <input currencyMask [(ngModel)]="valor" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
+                        class="form-control" placeholder="Valor utilizado ..." />
+                </div>
+                <div class="input-group col-sm-5">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                        </span>
+                    </div>
+                    <input id="datePicker" type="text" placeholder="Data de uso ..." class="form-control" bsDatepicker
+                        [bsConfig]="{ isAnimated: true, adaptivePosition: true, dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"
+                        [minDate]="minDate" [daysDisabled]="[0]" class="form-control" />
                 </div>
             </div>
 
             <hr>
 
-            <div class="row">
-                <div class="col">
-                    <p>Escolha o tipo do benefício:</p>
+            <div class="row pl-5">
+                <div class="col-sm-11">
+                    <p class="greyColor">Escolha o tipo do benefício:</p>
                     <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
-                                value="option1" checked>
+                        <label #labelCheck  class="form-check-label">
+                            <input (click)="onCheckRadiosSelected(labelCheck)" class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
+                                value="option1">
                             Despesas não cobertas por Plano Odontológico.
                             <span class="circle">
                                 <span class="check"></span>
@@ -115,14 +160,23 @@
                 </div>
             </div>
 
-            <input name="teste" placeholder="123456" [textMask]="{mask: mask}" type="text"/>
-
-            <input type="text" name="field" ng-model="number" ui-number-mask>
-
             <hr>
 
-            <button mat-raised-button class="btn btn-success" (click)="adicionarBeneficio()">Salvar</button>
+            <div class="doNotPrint">
+                <button type="submit" class="btn btn-success" (click)="adicionarBeneficio();onPrint()">Imprimir</button>
+            </div>
 
         </div>
+
     </div>
+
+    <div class="row doNotDisplay print">
+        <div class="col-md-auto">
+            <i class="fas fa-cut fa-2x greyColor"></i>
+        </div>
+        <div class="col">
+            <hr class="greyColor" style="border-top: dashed 2px;">
+        </div>
+    </div>
+
 </div>
