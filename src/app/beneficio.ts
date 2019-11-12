@@ -1,12 +1,11 @@
-export class Beneficio{
+export class Beneficio {
 
-    constructor(
-        id: number,
-        idSolicitante: number,
-        descrição: string,
-        valor: number,
-        tipo: number
-        //data: Date
-    ){}
+    id: number;
+    solicitante: string;
+    secao: string = "";
+    valor: number;
+    data: Date = new Date();
+    tipo: string;
+    observacao: string;
 
 }

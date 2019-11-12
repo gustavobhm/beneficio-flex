@@ -20,7 +20,7 @@
 
         <div class="card-body">
 
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <form autocomplete="off" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
 
                 <div class="row">
                     <div class="input-group col-sm-11 pt-3 pb-3">
@@ -29,9 +29,10 @@
                                 <i class="fas fa-user faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <input type="text" placeholder="Nome do solicitante ..." formControlName="solicitante"
+                        <input id="solicitante" [(ngModel)]="beneficio.solicitante" name="solicitante" type="text"
+                            placeholder="Nome do solicitante ..." formControlName="solicitante"
                             class="form-control printWithoutBorder"
-                            [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }" autofocus />
+                            [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }" autofocus upperCase/>
                         <div *ngIf="submitted && f.solicitante.errors" class="invalid-feedback infMargin">
                             <div *ngIf="f.solicitante.errors.required">O solicitante é obrigatório!</div>
                             <div *ngIf="f.solicitante.errors.minlength">O solicitante precisa ter pelo menos 3
@@ -48,12 +49,14 @@
                                 <i class="fas fa-address-card faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <select formControlName="secao" class="form-control selectpicker printWithoutBorder"
-                            data-style="btn btn-link" id="select" [ngStyle]="{'color': newColor}"
-                            (change)="newColor='#495057'" [ngClass]="{ 'is-invalid': submitted && f.secao.errors }">
+                        <select id="secao" [(ngModel)]="beneficio.secao" name="secao" formControlName="secao"
+                            class="form-control selectpicker printWithoutBorder selectedItem" data-style="btn btn-link"
+                            [ngStyle]="{'color': newColor}" (change)="newColor='#495057'"
+                            [ngClass]="{ 'is-invalid': submitted && f.secao.errors }">
                             <option value="" disabled selected hidden>Seção do solitante ...</option>
-                            <option value="1">Tecnologia da Informação</option>
-                            <option value="2">Seção de Sindicâncias</option>
+                            <option *ngFor="let secao of secoes" [value]="secao.descricao">
+                                {{secao.descricao}}
+                            </option>
                         </select>
                         <div *ngIf="submitted && f.secao.errors" class="invalid-feedback infMargin">
                             <div *ngIf="f.secao.errors.required">A seção é obrigatória!</div>
@@ -62,40 +65,16 @@
                 </div>
 
                 <div class="row">
-                    <!-- <div class="input-group colFixedSize pt-3 pb-3">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">
-                                <i class="far fa-calendar-alt faIconFixedSize fa-lg"></i>
-                            </span>
-                        </div>-->
-                    <!--<input matInput mask="00/00/0000" id="datePicker" type="text" placeholder="Data de uso ..."
-                            class="form-control" bsDatepicker
-                            [bsConfig]="{ isAnimated: true, adaptivePosition: true, dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"
-                            [maxDate]="maxDate" [daysDisabled]="[0]" />-->
-                    <!--<input formControlName="data" matInput id="datePicker" type="text" placeholder="Data de uso ..."
-                            class="form-control" bsDatepicker
-                            [bsConfig]="{ isAnimated: true, adaptivePosition: true, dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"
-                            [maxDate]="maxDate" [daysDisabled]="[0]"
-                            [ngClass]="{ 'is-invalid': submitted && f.data.errors }" />
-                        <div *ngIf="submitted && f.data.errors" class="invalid-feedback infMargin">
-                            <div *ngIf="f.data.errors.required">A data é obrigatória!</div>
-                            <div *ngIf="f.data.errors.minlength">Data incompleta!</div>
-                        </div>
-                    </div>-->
                     <div class="input-group colFixedSize pt-3 pb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text">
-
                                 <i class="fas fa-file-invoice-dollar faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <!--<input maxlength="10" currencyMask [(ngModel)]="valor"
+                        <input id="valor" [(ngModel)]="beneficio.valor" name="valor" formControlName="valor"
+                            maxlength="10" currencyMask [(ngModel)]="valor"
                             [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
-                            class="form-control currencySize" placeholder="Valor utilizado ..." />-->
-                        <input formControlName="valor" maxlength="10" currencyMask [(ngModel)]="valor" 
-                            [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
-                            class="form-control alignCenter currencySize printWithoutBorder"
-                            placeholder="Valor utilizado ..."
+                            class="form-control  currencySize printWithoutBorder" placeholder="Valor utilizado ..."
                             [ngClass]="{ 'is-invalid': submitted && f.valor.errors }" />
                         <div *ngIf="submitted && f.valor.errors" class="invalid-feedback infMargin">
                             <div *ngIf="f.valor.errors.required">O valor é obrigatório!</div>
@@ -108,8 +87,8 @@
                                 <i class="fas fa-calendar-alt faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <input type="text" class="form-control alignCenter printWithoutBorder"
-                            value="{{today | date:'dd/MM/yyyy'}}" />
+                        <input formControlName="data" name="data" id="data" [(ngModel)]="beneficio.data" type="text"
+                            class="form-control printWithoutBorder" value="{{beneficio.data | date:'dd/MM/yyyy'}}" />
                     </div>
                 </div>
 
@@ -125,7 +104,7 @@
                             </div>
                         </span>
                         <span class="pt-2 doNotDisplay print darkColor">
-                            {{ selected==i ? "" : beneficioEscolhido }}
+                            {{ selected==i ? "" : beneficioEscolhido | uppercase }}
                         </span>
                     </div>
                 </div>
@@ -133,16 +112,16 @@
                 <div class="row pl-4 doNotPrint">
                     <div class="col pb-2">
 
-                        <div *ngFor="let beneficio of beneficios;let i = index">
+                        <div *ngFor="let ben of beneficios;let i = index">
                             <div class="form-check form-check-radio">
-                                <!--[className]=" selected==i ? 'form-check form-check-radio print' : 'form-check form-check-radio doNotPrint '">-->
                                 <label class="form-check-label">
-                                    <input formControlName="tipoBeneficio" class="form-check-input" type="radio"
-                                        name="tipoBeneficio" id="id_{{i}}" value="{{i}}"
+                                    <input [(ngModel)]="beneficio.tipo" formControlName="tipoBeneficio"
+                                        class="form-check-input" type="radio" name="tipoBeneficio" id="id_{{i}}"
+                                        value="{{ben}}"
                                         [ngClass]="{ 'is-invalid': submitted && f.tipoBeneficio.errors }"
-                                        (click)="selected=i;beneficioEscolhido=beneficio">
+                                        (click)="selected=i;beneficioEscolhido=ben">
                                     <div [style.color]="selected==i?'#495057':'#aaaaaa'">
-                                        {{ beneficio }} </div>
+                                        {{ ben }} </div>
                                     <span class="circle">
                                         <span class="check"></span>
                                     </span>
@@ -154,15 +133,16 @@
                 </div>
 
 
-                <div [className]=" observacao.value != '' ? ' row print' : 'row doNotPrint '">
+                <div [className]=" obs.value != '' ? ' row print' : 'row doNotPrint '">
                     <div class="input-group col-sm-11 pt-3 pb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text faIconFixedTop">
                                 <i class="fas fa-comments faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <textarea #observacao autosize type="text" placeholder="Observações ..."
-                            class="form-control printWithoutBorder" autofocus></textarea>
+                        <textarea [(ngModel)]="beneficio.observacao" formControlName="observacao" #obs autosize
+                            type="text" placeholder="Observações ..." class="form-control printWithoutBorder"
+                            autofocus upperCase></textarea>
                     </div>
                 </div>
 

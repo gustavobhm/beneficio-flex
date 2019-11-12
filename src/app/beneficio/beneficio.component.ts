@@ -1,11 +1,10 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Location } from '@angular/common';
-//import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { Beneficio } from '../beneficio';
 import { BeneficioService } from '../beneficio.service';
-
-//declare var $: any;
+import { Secao } from '../secao';
+import { SecaoService } from '../secao.service';
 
 @Component({
   selector: 'app-beneficio',
@@ -25,70 +24,69 @@ export class BeneficioComponent implements OnInit {
     'Filhos Recém Nascidos (De 0 até 2 anos).'
   ]
 
-  beneficio: Beneficio = new Beneficio(0, 0, "", 0, 0);
-  selected: number;
-  newColor: string;
+  secoes: Secao[];
+
+  beneficio: Beneficio = new Beneficio();
+  submitted: boolean = false;
 
   registerForm: FormGroup;
-  submitted = false;
 
-  today: Date = new Date();
-
-  //maxDate: Date = new Date(Date.now());
-
-  constructor(private service: BeneficioService, private formBuilder: FormBuilder,private location: Location) { }
+  constructor(
+    private beneficioService: BeneficioService,
+    private secaoService: SecaoService,
+    private formBuilder: FormBuilder,
+    private location: Location) { }
 
   ngOnInit() {
 
     this.registerForm = this.formBuilder.group({
       solicitante: ['', [Validators.required, Validators.minLength(3)]],
       secao: ['', Validators.required],
-      //data: ['', [Validators.required, Validators.minLength(8)]],
+      data: [],
       valor: ['', [Validators.required, Validators.minLength(10)]],
-      tipoBeneficio: ['', Validators.required]
+      tipoBeneficio: ['', Validators.required],
+      observacao: []
     });
 
+    this.secaoService.listarSecoes()
+      .subscribe(
+        data => this.secoes = data,
+        error => console.log(error));
+
   }
 
-  public adicionarBeneficio() {
-    let resp = this.service.adicionarBeneficio(this.beneficio);
-    //resp.subscribe((data) => this.message = data);
-    resp = this.service.adicionarBeneficio(this.beneficio);
-    //console.log(resp);
-  }
 
   printScreen() {
     document.title = "Benefício Flex - Cremesp";
     window.print();
   }
 
-  // convenience getter for easy access to form fields
   get f() { return this.registerForm.controls; }
 
   onSubmit() {
     this.submitted = true;
 
-    // stop here if form is invalid
     if (this.registerForm.invalid) {
       return;
     }
 
-    /*console.log("sucesso");*/
-
-    this.adicionarBeneficio();
-
     this.printScreen();
 
-    this.reset();
+    this.save();
 
-    /*// display form values on success
-    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.registerForm.value, null, 4));*/
   }
 
   reset() {
     this.submitted = false;
+    this.beneficio = new Beneficio();
     location.reload();
-    //this.registerForm.reset();
+  }
+
+  save() {
+    /*this.beneficioService.salvarBeneficio(this.beneficio)
+      .subscribe(data => console.log(data), error => console.log(error));*/
+    console.log(this.beneficio);
+    //this.reset();
   }
 
 }

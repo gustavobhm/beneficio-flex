@@ -1,16 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Beneficio } from './beneficio';
 
-@Injectable({
-  providedIn: 'root'
-})
+const API = 'http://dk01.cremesp.org.br:10020/beneficios';
+
+@Injectable({ providedIn: 'root' })
 export class BeneficioService {
 
   constructor(private http: HttpClient) { }
 
-  public adicionarBeneficio(beneficio) {
-    //console.log(JSON.parse('{"message": "Olá"}'));
-    //return this.http.post("http://localhost:9090/beneficio", beneficio, { responseType: 'text' as 'json' });
-    return JSON.parse('{"message": "Olá"}');
+  salvarBeneficio(beneficio: Beneficio): Observable<Beneficio> {
+    return this.http.post<Beneficio>(API, beneficio);
   }
+
 }

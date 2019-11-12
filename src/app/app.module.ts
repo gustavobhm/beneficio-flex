@@ -4,16 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { NgxCurrencyModule } from "ngx-currency";
 import { NgxMaskModule } from 'ngx-mask';
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BeneficioService } from './beneficio.service';
 import { BeneficioComponent } from './beneficio/beneficio.component';
+import { SecaoService } from './secao.service';
+import { NgxUpperCaseDirectiveModule } from 'ngx-upper-case-directive';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -47,9 +49,12 @@ export const customCurrencyMaskConfig = {
     BsDatepickerModule.forRoot(),
     BrowserAnimationsModule,
     TextareaAutosizeModule,
-    ReactiveFormsModule.withConfig({warnOnNgModelWithFormControl: 'never'})
+    ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: 'never' }),
+    NgxUpperCaseDirectiveModule
   ],
-  providers: [BeneficioService],
+  providers: [
+    BeneficioService,
+    SecaoService],
   bootstrap: [AppComponent]
 })
 
