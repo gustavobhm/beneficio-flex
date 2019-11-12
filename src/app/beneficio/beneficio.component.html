@@ -5,9 +5,6 @@
         maxlength="100" placeholder="Descrição do benefício..." />
 </div>-->
 
-
-
-
 <div class="container">
 
     <div class="row p-4 justify-content-center printMaxWidth">
@@ -95,7 +92,7 @@
                         <!--<input maxlength="10" currencyMask [(ngModel)]="valor"
                             [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
                             class="form-control currencySize" placeholder="Valor utilizado ..." />-->
-                        <input formControlName="valor" maxlength="10" currencyMask [(ngModel)]="valor"
+                        <input formControlName="valor" maxlength="10" currencyMask [(ngModel)]="valor" 
                             [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
                             class="form-control alignCenter currencySize printWithoutBorder"
                             placeholder="Valor utilizado ..."
@@ -121,7 +118,7 @@
                         <span class="input-group-text">
                             <i class="fas fa-gifts faIconFixedSize fa-lg"></i>
                         </span>
-                        <span class="greyColor pt-2 doNotPrint" >
+                        <span class="greyColor pt-2 doNotPrint">
                             Tipo do benefício:
                             <div *ngIf="submitted && f.tipoBeneficio.errors" class="invalid-message">
                                 <div *ngIf="f.tipoBeneficio.errors.required">O tipo do benefício é obrigatório!</div>
@@ -157,14 +154,14 @@
                 </div>
 
 
-                <div class="row">
+                <div [className]=" observacao.value != '' ? ' row print' : 'row doNotPrint '">
                     <div class="input-group col-sm-11 pt-3 pb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text faIconFixedTop">
                                 <i class="fas fa-comments faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <textarea autosize type="text" placeholder="Observações ..."
+                        <textarea #observacao autosize type="text" placeholder="Observações ..."
                             class="form-control printWithoutBorder" autofocus></textarea>
                     </div>
                 </div>

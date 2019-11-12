@@ -46,7 +46,8 @@ export const customCurrencyMaskConfig = {
     NgxMaskModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BrowserAnimationsModule,
-    TextareaAutosizeModule
+    TextareaAutosizeModule,
+    ReactiveFormsModule.withConfig({warnOnNgModelWithFormControl: 'never'})
   ],
   providers: [BeneficioService],
   bootstrap: [AppComponent]
