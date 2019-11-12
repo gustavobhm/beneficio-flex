@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Location } from '@angular/common';
 //import { BsDatepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { Beneficio } from '../beneficio';
 import { BeneficioService } from '../beneficio.service';
@@ -12,55 +14,81 @@ import { BeneficioService } from '../beneficio.service';
 })
 export class BeneficioComponent implements OnInit {
 
-  //datepickerConfig: Partial<BsDatepickerConfig>;
+  beneficios = [
+    'Despesas não cobertas por Plano Odontológico.',
+    'Despesas não cobertas pelo Plano de Saúde.',
+    'Medicamentos.',
+    'Óculos e lentes de contato.',
+    'Academia.',
+    'Idiomas.',
+    'Educação e Cultura.',
+    'Filhos Recém Nascidos (De 0 até 2 anos).'
+  ]
 
   beneficio: Beneficio = new Beneficio(0, 0, "", 0, 0);
-  message: any;
-  colorStyle: any;
+  selected: number;
+  newColor: string;
 
-  bsValue: Date = new Date();
-  minDate: Date = new Date();
+  registerForm: FormGroup;
+  submitted = false;
 
-  //constructor(private service: BeneficioService, private bsLocaleService: BsLocaleService) {
-  constructor(private service: BeneficioService) {
+  today: Date = new Date();
 
-    /*this.datepickerConfig = Object.assign({},
-      {
-        containerClass: 'theme-dark-blue',
-        showWeekNumbers: false,
-        dateInputFormat: 'DD/MM/YYYY'
-      });*/
+  //maxDate: Date = new Date(Date.now());
+
+  constructor(private service: BeneficioService, private formBuilder: FormBuilder,private location: Location) { }
+
+  ngOnInit() {
+
+    this.registerForm = this.formBuilder.group({
+      solicitante: ['', [Validators.required, Validators.minLength(3)]],
+      secao: ['', Validators.required],
+      //data: ['', [Validators.required, Validators.minLength(8)]],
+      valor: ['', [Validators.required, Validators.minLength(10)]],
+      tipoBeneficio: ['', Validators.required]
+    });
 
   }
-
-  ngOnInit() { }
 
   public adicionarBeneficio() {
     let resp = this.service.adicionarBeneficio(this.beneficio);
     //resp.subscribe((data) => this.message = data);
     resp = this.service.adicionarBeneficio(this.beneficio);
-    console.log(resp);
+    //console.log(resp);
   }
 
-
-  onOptionsSelected(event) {
-    let selectComp = event.target;
-
-    this.colorStyle = "#495057";
-
-    console.log(selectComp.value);
-  }
-
-  onCheckRadiosSelected(label){
-
-    label.colorStyle = "green";
-
-    console.log(label);
-  }
-
-  onPrint() {
+  printScreen() {
     document.title = "Benefício Flex - Cremesp";
     window.print();
+  }
+
+  // convenience getter for easy access to form fields
+  get f() { return this.registerForm.controls; }
+
+  onSubmit() {
+    this.submitted = true;
+
+    // stop here if form is invalid
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    /*console.log("sucesso");*/
+
+    this.adicionarBeneficio();
+
+    this.printScreen();
+
+    this.reset();
+
+    /*// display form values on success
+    alert('SUCCESS!! :-)\n\n' + JSON.stringify(this.registerForm.value, null, 4));*/
+  }
+
+  reset() {
+    this.submitted = false;
+    location.reload();
+    //this.registerForm.reset();
   }
 
 }

@@ -6,16 +6,16 @@
 </div>-->
 
 
+
+
 <div class="container">
 
-    <div class="row p-4 justify-content-center">
-        <div class="col-md-auto">
-            <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
-                alt="Responsive image" width="350">
-        </div>
+    <div class="row p-4 justify-content-center printMaxWidth">
+        <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
+            alt="Responsive image" width="350">
     </div>
 
-    <div class="card">
+    <div class="card printMaxWidth">
 
         <div class="card-header card-header-primary">
             <h4 class="card-title">Benefício Flex</h4>
@@ -23,160 +23,178 @@
 
         <div class="card-body">
 
-            <div class="row p-2">
-                <div class="input-group col-sm-11">
-                    <div class="input-group-prepend">
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+                <div class="row">
+                    <div class="input-group col-sm-11 pt-3 pb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-user faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>
+                        <input type="text" placeholder="Nome do solicitante ..." formControlName="solicitante"
+                            class="form-control printWithoutBorder"
+                            [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }" autofocus />
+                        <div *ngIf="submitted && f.solicitante.errors" class="invalid-feedback infMargin">
+                            <div *ngIf="f.solicitante.errors.required">O solicitante é obrigatório!</div>
+                            <div *ngIf="f.solicitante.errors.minlength">O solicitante precisa ter pelo menos 3
+                                caracteres!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group col-sm-11 pt-3 pb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-address-card faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>
+                        <select formControlName="secao" class="form-control selectpicker printWithoutBorder"
+                            data-style="btn btn-link" id="select" [ngStyle]="{'color': newColor}"
+                            (change)="newColor='#495057'" [ngClass]="{ 'is-invalid': submitted && f.secao.errors }">
+                            <option value="" disabled selected hidden>Seção do solitante ...</option>
+                            <option value="1">Tecnologia da Informação</option>
+                            <option value="2">Seção de Sindicâncias</option>
+                        </select>
+                        <div *ngIf="submitted && f.secao.errors" class="invalid-feedback infMargin">
+                            <div *ngIf="f.secao.errors.required">A seção é obrigatória!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- <div class="input-group colFixedSize pt-3 pb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="far fa-calendar-alt faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>-->
+                    <!--<input matInput mask="00/00/0000" id="datePicker" type="text" placeholder="Data de uso ..."
+                            class="form-control" bsDatepicker
+                            [bsConfig]="{ isAnimated: true, adaptivePosition: true, dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"
+                            [maxDate]="maxDate" [daysDisabled]="[0]" />-->
+                    <!--<input formControlName="data" matInput id="datePicker" type="text" placeholder="Data de uso ..."
+                            class="form-control" bsDatepicker
+                            [bsConfig]="{ isAnimated: true, adaptivePosition: true, dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"
+                            [maxDate]="maxDate" [daysDisabled]="[0]"
+                            [ngClass]="{ 'is-invalid': submitted && f.data.errors }" />
+                        <div *ngIf="submitted && f.data.errors" class="invalid-feedback infMargin">
+                            <div *ngIf="f.data.errors.required">A data é obrigatória!</div>
+                            <div *ngIf="f.data.errors.minlength">Data incompleta!</div>
+                        </div>
+                    </div>-->
+                    <div class="input-group colFixedSize pt-3 pb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+
+                                <i class="fas fa-file-invoice-dollar faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>
+                        <!--<input maxlength="10" currencyMask [(ngModel)]="valor"
+                            [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
+                            class="form-control currencySize" placeholder="Valor utilizado ..." />-->
+                        <input formControlName="valor" maxlength="10" currencyMask [(ngModel)]="valor"
+                            [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
+                            class="form-control alignCenter currencySize printWithoutBorder"
+                            placeholder="Valor utilizado ..."
+                            [ngClass]="{ 'is-invalid': submitted && f.valor.errors }" />
+                        <div *ngIf="submitted && f.valor.errors" class="invalid-feedback infMargin">
+                            <div *ngIf="f.valor.errors.required">O valor é obrigatório!</div>
+                            <div *ngIf="f.valor.errors.minlength">Valor incompleto!</div>
+                        </div>
+                    </div>
+                    <div class="input-group colFixedSize pt-3 pb-3 doNotDisplay print">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>
+                        <input type="text" class="form-control alignCenter printWithoutBorder"
+                            value="{{today | date:'dd/MM/yyyy'}}" />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group col pt-3 pb-2">
                         <span class="input-group-text">
-                            <i class="far fa-user"></i>
+                            <i class="fas fa-gifts faIconFixedSize fa-lg"></i>
+                        </span>
+                        <span class="greyColor pt-2 doNotPrint" >
+                            Tipo do benefício:
+                            <div *ngIf="submitted && f.tipoBeneficio.errors" class="invalid-message">
+                                <div *ngIf="f.tipoBeneficio.errors.required">O tipo do benefício é obrigatório!</div>
+                            </div>
+                        </span>
+                        <span class="pt-2 doNotDisplay print darkColor">
+                            {{ selected==i ? "" : beneficioEscolhido }}
                         </span>
                     </div>
-                    <input type="text" value="" placeholder="Nome do solicitante ..." class="form-control" autofocus />
                 </div>
-            </div>
 
-            <div class="row p-2">
-                <div class="input-group col-sm-11">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="far fa-address-card"></i>
-                        </span>
-                    </div>
-                    <select class="form-control selectpicker" data-style="btn btn-link" id="select"
-                        [ngStyle]="{'color': colorStyle}" (change)="onOptionsSelected($event)">
-                        <option value="" disabled selected hidden>Seção do solitante ...</option>
-                        <option value="1">Tecnologia da Informação</option>
-                        <option value="2">Seção de Sindicâncias</option>
-                    </select>
-                </div>
-            </div>
+                <div class="row pl-4 doNotPrint">
+                    <div class="col pb-2">
 
-            <div class="row p-2">
-                <div class="input-group col-sm-5">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="fas fa-dollar-sign"></i>
-                        </span>
-                    </div>
-                    <input currencyMask [(ngModel)]="valor" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
-                        class="form-control" placeholder="Valor utilizado ..." />
-                </div>
-                <div class="input-group col-sm-5">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">
-                            <i class="far fa-calendar-alt"></i>
-                        </span>
-                    </div>
-                    <input id="datePicker" type="text" placeholder="Data de uso ..." class="form-control" bsDatepicker
-                        [bsConfig]="{ isAnimated: true, adaptivePosition: true, dateInputFormat: 'DD/MM/YYYY', showWeekNumbers:false }"
-                        [minDate]="minDate" [daysDisabled]="[0]" class="form-control" />
-                </div>
-            </div>
+                        <div *ngFor="let beneficio of beneficios;let i = index">
+                            <div class="form-check form-check-radio">
+                                <!--[className]=" selected==i ? 'form-check form-check-radio print' : 'form-check form-check-radio doNotPrint '">-->
+                                <label class="form-check-label">
+                                    <input formControlName="tipoBeneficio" class="form-check-input" type="radio"
+                                        name="tipoBeneficio" id="id_{{i}}" value="{{i}}"
+                                        [ngClass]="{ 'is-invalid': submitted && f.tipoBeneficio.errors }"
+                                        (click)="selected=i;beneficioEscolhido=beneficio">
+                                    <div [style.color]="selected==i?'#495057':'#aaaaaa'">
+                                        {{ beneficio }} </div>
+                                    <span class="circle">
+                                        <span class="check"></span>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
 
-            <hr>
-
-            <div class="row pl-5">
-                <div class="col-sm-11">
-                    <p class="greyColor">Escolha o tipo do benefício:</p>
-                    <div class="form-check form-check-radio">
-                        <label #labelCheck  class="form-check-label">
-                            <input (click)="onCheckRadiosSelected(labelCheck)" class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1"
-                                value="option1">
-                            Despesas não cobertas por Plano Odontológico.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option2">
-                            Despesas não cobertas pelo Plano de Saúde.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option3">
-                            Medicamentos.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option4">
-                            Óculos e lentes de contato.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option5">
-                            Academia.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option6">
-                            Idiomas.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option7">
-                            Educação e Cultura.
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="form-check form-check-radio">
-                        <label class="form-check-label">
-                            <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2"
-                                value="option8">
-                            Filhos Recém Nascidos (De 0 até 2 anos).
-                            <span class="circle">
-                                <span class="check"></span>
-                            </span>
-                        </label>
                     </div>
                 </div>
-            </div>
 
-            <hr>
 
-            <div class="doNotPrint">
-                <button type="submit" class="btn btn-success" (click)="adicionarBeneficio();onPrint()">Imprimir</button>
-            </div>
+                <div class="row">
+                    <div class="input-group col-sm-11 pt-3 pb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text faIconFixedTop">
+                                <i class="fas fa-comments faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>
+                        <textarea autosize type="text" placeholder="Observações ..."
+                            class="form-control printWithoutBorder" autofocus></textarea>
+                    </div>
+                </div>
+
+                <div class="row doNotDisplay print pt-5 pb-2">
+                    <div class="col-12 assignHeight">
+                        <hr class="greyColor assignLine">
+                    </div>
+                    <div class="col-12 greyColor pt-2 assignLabel">
+                        Assinatura
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="doNotPrint">
+                    <button type="submit" class="btn btn-success">Imprimir</button>
+                </div>
+
+            </form>
 
         </div>
 
     </div>
 
-    <div class="row doNotDisplay print">
-        <div class="col-md-auto">
-            <i class="fas fa-cut fa-2x greyColor"></i>
+    <div class="row doNotDisplay print cutMargin">
+        <div class="col-md-auto pt-1 pl-0 pr-2 ">
+            <i class="fas fa-cut greyColor"></i>
         </div>
-        <div class="col">
-            <hr class="greyColor" style="border-top: dashed 2px;">
+        <div class="col p-0">
+            <hr class="greyColor cutDashed">
         </div>
     </div>
-
-</div>

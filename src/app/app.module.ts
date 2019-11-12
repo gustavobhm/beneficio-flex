@@ -1,13 +1,15 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
 import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { NgxCurrencyModule } from "ngx-currency";
+import { NgxMaskModule } from 'ngx-mask';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BeneficioService } from './beneficio.service';
@@ -16,7 +18,7 @@ import { BeneficioComponent } from './beneficio/beneficio.component';
 defineLocale('pt-br', ptBrLocale);
 
 export const customCurrencyMaskConfig = {
-  align: "center",
+  align: null,
   allowNegative: true,
   allowZero: true,
   decimal: ",",
@@ -38,10 +40,13 @@ export const customCurrencyMaskConfig = {
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     MDBBootstrapModule.forRoot(),
     NgxCurrencyModule.forRoot(customCurrencyMaskConfig),
+    NgxMaskModule.forRoot(),
     BsDatepickerModule.forRoot(),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    TextareaAutosizeModule
   ],
   providers: [BeneficioService],
   bootstrap: [AppComponent]

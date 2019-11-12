@@ -397,7 +397,7 @@ template {
     page-break-after: avoid;
   }
   @page {
-    size: a3;
+    size: a4;
   }
   body {
     min-width: 992px !important;
@@ -700,6 +700,8 @@ input[type="month"] {
 textarea {
   overflow: auto;
   resize: vertical;
+  line-height: 1.5 !important;
+  text-align: justify !important;
 }
 
 fieldset {
@@ -992,19 +994,22 @@ pre code {
 
 @media (min-width: 768px) {
   .container {
-    max-width: 720px;
+    /*max-width: 720px;*/
+    max-width: 700px;
   }
 }
 
 @media (min-width: 992px) {
   .container {
-    max-width: 960px;
+    /*max-width: 960px;*/
+    max-width: 700px;
   }
 }
 
 @media (min-width: 1200px) {
   .container {
-    max-width: 1140px;
+    /*max-width: 1140px;*/
+    max-width: 700px;
   }
 }
 
@@ -4611,6 +4616,8 @@ tbody.collapse.show {
 
 .card-title {
   margin-bottom: 0.75rem;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 .card-subtitle {
@@ -13038,12 +13045,6 @@ label {
   top: -10px;
 }
 
-textarea {
-  height: auto !important;
-  resize: none;
-  line-height: 1.428571 !important;
-}
-
 .form-group input[type="file"] {
   opacity: 0;
   position: absolute;
@@ -18974,23 +18975,110 @@ Copyright (c) 2015 Daniel Eden
   color: #aaaaaa;
 }
 
-#datePicker {
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: "";
+}
+option {
+  box-sizing: content-box;
+  padding: 5px 0;
+  text-indent: 1px;
+}
+
+/*#datePicker {
+  text-align: center;
+}*/
+
+.alignCenter {
   text-align: center;
 }
 
 .doNotDisplay {
-  display: none;
+  display: none !important;
+}
+
+.greyColor {
+  color: gray;
+}
+
+.darkColor {
+  color: rgb(73, 80, 87);
+}
+
+.currencySize {
+  width: 80px;
+}
+
+.colFixedSize {
+  width: 210px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.assignHeight {
+  height: 25px;
+}
+
+.assignLine {
+  border-top: solid 1px;
+  width: 400px;
+}
+
+.assignLabel {
+  text-align: center;
+  padding-top: 0rem !important;
+}
+
+.cutDashed {
+  border-top: dashed 1px;
+}
+
+.cutMargin {
+  margin-top: 50px;
+}
+
+.faIconFixedSize {
+  width: 25px;
+}
+
+.infMargin {
+  margin-left: 56px;
+}
+
+.fas {
+  color: grey;
+}
+
+.invalid-message {
+  font-size: 80%;
+  color: #f44336;
+}
+
+/*align-items: initial;
+margin-top: 10px;*/
+
+.faIconFixedTop {
+  align-self: flex-start !important;
+  margin-top: 10px;
 }
 
 @media print {
   .doNotPrint {
     display: none !important;
   }
+
   .print {
     display: flex !important;
   }
-}
 
-.greyColor {
-  color: gray;
+  .printWithoutBorder {
+    background-size: 0;
+    text-align: left;
+  }
+
+  .printMaxWidth {
+    max-width: 700px;
+  }
 }
