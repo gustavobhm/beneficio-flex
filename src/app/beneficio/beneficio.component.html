@@ -32,7 +32,12 @@
                         <input id="solicitante" [(ngModel)]="beneficio.solicitante" name="solicitante" type="text"
                             placeholder="Nome do solicitante ..." formControlName="solicitante"
                             class="form-control printWithoutBorder"
-                            [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }" autofocus upperCase/>
+                            [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }"
+                            class="form-control printWithoutBorder" (keyup)="listUsers($event)"
+                            list="dynamicList" upperCase autofocus />
+                        <datalist id="dynamicList">
+                            <option *ngFor="let usuario of usuarios" [value]="usuario.nome">{{usuario.nome}}</option>
+                        </datalist>
                         <div *ngIf="submitted && f.solicitante.errors" class="invalid-feedback infMargin">
                             <div *ngIf="f.solicitante.errors.required">O solicitante é obrigatório!</div>
                             <div *ngIf="f.solicitante.errors.minlength">O solicitante precisa ter pelo menos 3
@@ -141,8 +146,8 @@
                             </span>
                         </div>
                         <textarea [(ngModel)]="beneficio.observacao" formControlName="observacao" #obs autosize
-                            type="text" placeholder="Observações ..." class="form-control printWithoutBorder"
-                            autofocus upperCase></textarea>
+                            type="text" placeholder="Observações ..." class="form-control printWithoutBorder" autofocus
+                            upperCase></textarea>
                     </div>
                 </div>
 

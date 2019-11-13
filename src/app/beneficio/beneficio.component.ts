@@ -1,10 +1,14 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { Usuario } from 'src/usuario';
 import { Beneficio } from '../beneficio';
 import { BeneficioService } from '../beneficio.service';
 import { Secao } from '../secao';
 import { SecaoService } from '../secao.service';
+import { UsuarioService } from '../usuario.service';
 
 @Component({
   selector: 'app-beneficio',
@@ -24,16 +28,24 @@ export class BeneficioComponent implements OnInit {
     'Filhos Recém Nascidos (De 0 até 2 anos).'
   ]
 
-  secoes: Secao[];
 
-  beneficio: Beneficio = new Beneficio();
-  submitted: boolean = false;
 
-  registerForm: FormGroup;
+  private beneficio: Beneficio = new Beneficio();
+  private submitted: boolean = false;
+
+  private registerForm: FormGroup;
+
+  private secoes: Secao[] = [];
+
+  private usuarioData: Usuario[] = [];
+  private usuarios: Usuario[] = [];
+
+  private subject: Subject<string> = new Subject();
 
   constructor(
     private beneficioService: BeneficioService,
     private secaoService: SecaoService,
+    private usuarioService: UsuarioService,
     private formBuilder: FormBuilder,
     private location: Location) { }
 
@@ -53,12 +65,18 @@ export class BeneficioComponent implements OnInit {
         data => this.secoes = data,
         error => console.log(error));
 
-  }
+    this.usuarioService.listarUsuarios()
+      .subscribe(
+        data => this.usuarioData = data,
+        error => console.log(error));
 
+    this.subject.pipe(debounceTime(500)).subscribe(
+      nomeUsuario => {
+        this.usuarios = [];
+        if (nomeUsuario.length > 3)
+          this.usuarios = this.usuarioData.filter(v => v.nome.match(nomeUsuario));
+      });
 
-  printScreen() {
-    document.title = "Benefício Flex - Cremesp";
-    window.print();
   }
 
   get f() { return this.registerForm.controls; }
@@ -66,14 +84,23 @@ export class BeneficioComponent implements OnInit {
   onSubmit() {
     this.submitted = true;
 
-    if (this.registerForm.invalid) {
+    if (this.registerForm.invalid)
       return;
-    }
 
     this.printScreen();
-
     this.save();
+  }
 
+  printScreen() {
+    document.title = "Benefício Flex - Cremesp";
+    window.print();
+  }
+
+  save() {
+    /*this.beneficioService.salvarBeneficio(this.beneficio)
+      .subscribe(data => console.log(data), error => console.log(error));*/
+    console.log(this.beneficio);
+    //this.reset();
   }
 
   reset() {
@@ -82,11 +109,8 @@ export class BeneficioComponent implements OnInit {
     location.reload();
   }
 
-  save() {
-    /*this.beneficioService.salvarBeneficio(this.beneficio)
-      .subscribe(data => console.log(data), error => console.log(error));*/
-    console.log(this.beneficio);
-    //this.reset();
+  listUsers(event: any) {
+    this.subject.next(event.target.value);
   }
 
 }

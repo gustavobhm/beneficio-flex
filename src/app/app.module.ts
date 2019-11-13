@@ -10,12 +10,14 @@ import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { NgxCurrencyModule } from "ngx-currency";
 import { NgxMaskModule } from 'ngx-mask';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
+import { NgxUpperCaseDirectiveModule } from 'ngx-upper-case-directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BeneficioService } from './beneficio.service';
 import { BeneficioComponent } from './beneficio/beneficio.component';
 import { SecaoService } from './secao.service';
-import { NgxUpperCaseDirectiveModule } from 'ngx-upper-case-directive';
+import { UsuarioService } from './usuario.service';
+
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -54,7 +56,9 @@ export const customCurrencyMaskConfig = {
   ],
   providers: [
     BeneficioService,
-    SecaoService],
+    SecaoService,
+    UsuarioService
+  ],
   bootstrap: [AppComponent]
 })
 

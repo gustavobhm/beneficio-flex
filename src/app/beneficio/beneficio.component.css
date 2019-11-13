@@ -18971,7 +18971,6 @@ Copyright (c) 2015 Daniel Eden
 
 /*# sourceMappingURL=dashboard-free.css.map */
 
-
 select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -19058,8 +19057,8 @@ option {
   margin-top: 10px;
 }
 
-.selectedItem{
-    color: #aaaaaa;
+.selectedItem {
+  color: #aaaaaa;
 }
 
 @media print {
