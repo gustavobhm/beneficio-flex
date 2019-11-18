@@ -17,7 +17,9 @@ import { BeneficioService } from './beneficio.service';
 import { BeneficioComponent } from './beneficio/beneficio.component';
 import { SecaoService } from './secao.service';
 import { UsuarioService } from './usuario.service';
-
+import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
+import { AvisoComponent } from './aviso/aviso.component';
+import { ToastrModule } from 'ngx-toastr';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -37,7 +39,8 @@ export const customCurrencyMaskConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    BeneficioComponent
+    BeneficioComponent,
+    AvisoComponent
   ],
   imports: [
     BrowserModule,
@@ -50,9 +53,24 @@ export const customCurrencyMaskConfig = {
     NgxMaskModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 4000,
+      positionClass: 'toast-center-center',
+      preventDuplicates: true,
+      progressAnimation: "decreasing"
+    }),
     TextareaAutosizeModule,
     ReactiveFormsModule.withConfig({ warnOnNgModelWithFormControl: 'never' }),
-    NgxUpperCaseDirectiveModule
+    NgxUpperCaseDirectiveModule,
+    NgxLoadingModule.forRoot({
+      animationType: ngxLoadingAnimationTypes.none,
+      backdropBackgroundColour: 'rgba(0,0,0,0.1)',
+      backdropBorderRadius: '4px',
+      primaryColour: '#4caf50',
+      secondaryColour: '#4caf50',
+      tertiaryColour: '#4caf50',
+      fullScreenBackdrop: true
+    })
   ],
   providers: [
     BeneficioService,

@@ -1,11 +1,8 @@
-<!--<div class="form-group">
-    <label for="beneficio"><span class="req">* </span> Benefício: <small>Descrição do
-            benefício</small> </label>
-    <input required type="text" [(ngModel)]="beneficio.descricao" name="descricao" id="descricao" class="form-control"
-        maxlength="100" placeholder="Descrição do benefício..." />
-</div>-->
-
 <div class="container">
+
+    <ng-template #customLoadingTemplate></ng-template>
+    <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate">
+    </ngx-loading>
 
     <div class="row p-4 justify-content-center printMaxWidth">
         <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
@@ -16,6 +13,7 @@
 
         <div class="card-header card-header-primary">
             <h4 class="card-title">Benefício Flex</h4>
+            <span>Solicitação de Reembolso</span>
         </div>
 
         <div class="card-body">
@@ -33,8 +31,8 @@
                             placeholder="Nome do solicitante ..." formControlName="solicitante"
                             class="form-control printWithoutBorder"
                             [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }"
-                            class="form-control printWithoutBorder" (keyup)="listUsers($event)"
-                            list="dynamicList" upperCase autofocus />
+                            class="form-control printWithoutBorder" (keyup)="listUsers($event)" list="dynamicList"
+                            upperCase autofocus />
                         <datalist id="dynamicList">
                             <option *ngFor="let usuario of usuarios" [value]="usuario.nome">{{usuario.nome}}</option>
                         </datalist>
@@ -93,7 +91,7 @@
                             </span>
                         </div>
                         <input formControlName="data" name="data" id="data" [(ngModel)]="beneficio.data" type="text"
-                            class="form-control printWithoutBorder" value="{{beneficio.data | date:'dd/MM/yyyy'}}" />
+                            class="form-control printWithoutBorder" value="{{beneficio.data | date:'dd/MM/yyyy'}}"  />
                     </div>
                 </div>
 
@@ -163,7 +161,7 @@
                 <hr>
 
                 <div class="doNotPrint">
-                    <button type="submit" class="btn btn-success">Imprimir</button>
+                    <button type="submit" class="btn btn-success">SALVAR</button>
                 </div>
 
             </form>
@@ -180,3 +178,5 @@
             <hr class="greyColor cutDashed">
         </div>
     </div>
+
+</div>
