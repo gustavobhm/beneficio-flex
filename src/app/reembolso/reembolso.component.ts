@@ -5,50 +5,43 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Usuario } from 'src/usuario';
-import { Beneficio } from '../beneficio';
-import { BeneficioService } from '../beneficio.service';
-import { Secao } from '../secao';
-import { SecaoService } from '../secao.service';
-import { UsuarioService } from '../usuario.service';
+import { Beneficio } from '../models/beneficio';
+import { BeneficioService } from '../services/beneficio.service';
+import { Reembolso } from '../models/reembolso';
+import { ReembolsoService } from '../services/reembolso.service';
+import { Secao } from '../models/secao';
+import { SecaoService } from '../services/secao.service';
+import { UsuarioService } from '../services/usuario.service';
 
 @Component({
-  selector: 'app-beneficio',
-  templateUrl: './beneficio.component.html',
-  styleUrls: ['./beneficio.component.css']
+  selector: 'app-reembolso',
+  templateUrl: './reembolso.component.html',
+  styleUrls: ['./reembolso.component.css']
 })
-export class BeneficioComponent implements OnInit {
+export class ReembolsoComponent implements OnInit {
 
-  private beneficios: string[] = [
-    'Despesas não cobertas por Plano Odontológico.',
-    'Despesas não cobertas pelo Plano de Saúde.',
-    'Medicamentos.',
-    'Óculos e lentes de contato.',
-    'Academia.',
-    'Idiomas.',
-    'Educação e Cultura.',
-    'Filhos Recém Nascidos (De 0 até 2 anos).'
-  ]
-
-  private beneficio: Beneficio = new Beneficio();
-  private submitted: boolean = false;
-
-  private registerForm: FormGroup;
+  private reembolso: Reembolso = new Reembolso();
 
   private usuarioData: Usuario[] = [];
   private usuarios: Usuario[] = [];
   private secoes: Secao[] = [];
+  private beneficios: Beneficio[] = [];
+
+  private submitted: boolean = false;
+  private loading: boolean = false;
+
+  private registerForm: FormGroup;
 
   private subject: Subject<string> = new Subject();
-
-  private loading: boolean = false;
 
   private selected: number;
   private newColor: string;
 
   constructor(
-    private beneficioService: BeneficioService,
+    private reembolsoService: ReembolsoService,
     private secaoService: SecaoService,
     private usuarioService: UsuarioService,
+    private beneficioService: BeneficioService,
     private formBuilder: FormBuilder,
     private toastr: ToastrService,
     private router: Router) { }
@@ -74,6 +67,11 @@ export class BeneficioComponent implements OnInit {
         data => this.usuarioData = data,
         error => console.log(error));
 
+    this.beneficioService.listarBeneficios()
+      .subscribe(
+        data => this.beneficios = data,
+        error => console.log(error));
+
     this.subject.pipe(debounceTime(500))
       .subscribe(
         nomeUsuario => {
@@ -88,13 +86,12 @@ export class BeneficioComponent implements OnInit {
     this.submitted = true;
 
     if (this.registerForm.invalid)
-      return;
+      //return;
 
     this.print();
     this.save();
 
     this.submitted = false;
-
   }
 
   print() {
@@ -103,33 +100,34 @@ export class BeneficioComponent implements OnInit {
   }
 
   save() {
+
     this.loading = true;
 
-    /*this.beneficioService.salvarBeneficio(this.beneficio)
-      .subscribe(data => console.log(data), error => console.log(error));*/
-    //console.log(this.beneficio);
+    //this.reembolso.secao = "TECNOLOGIA DA INFORMAÇÃO";
 
-    //this.goToAviso();
-
-    this.resetForm();
-
-    this.toastr.success('Solicitação de reembolso salva com sucesso!', '')
-      //.onHidden.subscribe(() => this.loading = false);
-      .onHidden.subscribe(() => location.reload());
+    this.reembolsoService.salvarReembolso(this.reembolso)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.toastr.success('', 'Solicitação de reembolso salva com sucesso!')
+            .onHidden.subscribe(() => location.reload());
+        },
+        error => {
+          console.log(error);
+          this.toastr.error(error.message, 'A solicitação de reembolso não foi salva!')
+            .onHidden.subscribe(() => location.reload());
+        }
+      ).add(() => {
+        this.resetForm();
+      });
 
   }
 
   resetForm() {
-    //this.beneficio = new Beneficio();
     this.registerForm.reset();
-    this.beneficio.secao = "";
-    this.selected = -1;
+    this.reembolso.secao = "";
     this.newColor = '#AAAAAA';
-
-  }
-
-  goToAviso() {
-    this.router.navigate(['/aviso']);
+    this.selected = -1;
   }
 
   listUsers(event: any) {

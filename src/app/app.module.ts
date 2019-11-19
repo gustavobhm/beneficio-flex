@@ -8,18 +8,19 @@ import { defineLocale } from 'ngx-bootstrap/chronos';
 import { BsDatepickerModule, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { ptBrLocale } from 'ngx-bootstrap/locale';
 import { NgxCurrencyModule } from "ngx-currency";
+import { ngxLoadingAnimationTypes, NgxLoadingModule } from 'ngx-loading';
 import { NgxMaskModule } from 'ngx-mask';
 import { TextareaAutosizeModule } from 'ngx-textarea-autosize';
+import { ToastrModule } from 'ngx-toastr';
 import { NgxUpperCaseDirectiveModule } from 'ngx-upper-case-directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BeneficioService } from './beneficio.service';
-import { BeneficioComponent } from './beneficio/beneficio.component';
-import { SecaoService } from './secao.service';
-import { UsuarioService } from './usuario.service';
-import { NgxLoadingModule, ngxLoadingAnimationTypes } from 'ngx-loading';
 import { AvisoComponent } from './aviso/aviso.component';
-import { ToastrModule } from 'ngx-toastr';
+import { BeneficioService } from './services/beneficio.service';
+import { ReembolsoComponent } from './reembolso/reembolso.component';
+import { ReembolsoService } from './services/reembolso.service';
+import { SecaoService } from './services/secao.service';
+import { UsuarioService } from './services/usuario.service';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -39,7 +40,7 @@ export const customCurrencyMaskConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    BeneficioComponent,
+    ReembolsoComponent,
     AvisoComponent
   ],
   imports: [
@@ -74,6 +75,7 @@ export const customCurrencyMaskConfig = {
   ],
   providers: [
     BeneficioService,
+    ReembolsoService,
     SecaoService,
     UsuarioService
   ],

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { BeneficioComponent } from './beneficio/beneficio.component';
 import { AvisoComponent } from './aviso/aviso.component';
+import { ReembolsoComponent } from './reembolso/reembolso.component';
 
 
 const routes: Routes = [
-  { path: "", redirectTo: "beneficio", pathMatch: "full" },
-  { path: "beneficio", component: BeneficioComponent },
+  { path: "", redirectTo: "reembolso", pathMatch: "full" },
+  { path: "reembolso", component: ReembolsoComponent },
   { path: "aviso", component: AvisoComponent }
 ];
 

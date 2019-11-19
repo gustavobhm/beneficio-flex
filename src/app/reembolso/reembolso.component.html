@@ -27,7 +27,7 @@
                                 <i class="fas fa-user faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <input id="solicitante" [(ngModel)]="beneficio.solicitante" name="solicitante" type="text"
+                        <input id="solicitante" [(ngModel)]="reembolso.solicitante" name="solicitante" type="text"
                             placeholder="Nome do solicitante ..." formControlName="solicitante"
                             class="form-control printWithoutBorder"
                             [ngClass]="{ 'is-invalid': submitted && f.solicitante.errors }"
@@ -52,7 +52,7 @@
                                 <i class="fas fa-address-card faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <select id="secao" [(ngModel)]="beneficio.secao" name="secao" formControlName="secao"
+                        <select id="secao" [(ngModel)]="reembolso.secao" name="secao" formControlName="secao"
                             class="form-control selectpicker printWithoutBorder selectedItem" data-style="btn btn-link"
                             [ngStyle]="{'color': newColor}" (change)="newColor='#495057'"
                             [ngClass]="{ 'is-invalid': submitted && f.secao.errors }">
@@ -74,7 +74,7 @@
                                 <i class="fas fa-file-invoice-dollar faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <input id="valor" [(ngModel)]="beneficio.valor" name="valor" formControlName="valor"
+                        <input id="valor" [(ngModel)]="reembolso.valor" name="valor" formControlName="valor"
                             maxlength="10" currencyMask [(ngModel)]="valor"
                             [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
                             class="form-control  currencySize printWithoutBorder" placeholder="Valor utilizado ..."
@@ -90,8 +90,8 @@
                                 <i class="fas fa-calendar-alt faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <input formControlName="data" name="data" id="data" [(ngModel)]="beneficio.data" type="text"
-                            class="form-control printWithoutBorder" value="{{beneficio.data | date:'dd/MM/yyyy'}}"  />
+                        <input formControlName="data" name="data" id="data" [(ngModel)]="reembolso.data" type="text"
+                            class="form-control printWithoutBorder" value="{{reembolso.data | date:'dd/MM/yyyy'}}"  />
                     </div>
                 </div>
 
@@ -115,16 +115,16 @@
                 <div class="row pl-4 doNotPrint">
                     <div class="col pb-2">
 
-                        <div *ngFor="let ben of beneficios;let i = index">
+                        <div *ngFor="let beneficio of beneficios;let i = index">
                             <div class="form-check form-check-radio">
                                 <label class="form-check-label">
-                                    <input [(ngModel)]="beneficio.tipo" formControlName="tipoBeneficio"
+                                    <input [(ngModel)]="reembolso.beneficio" formControlName="tipoBeneficio"
                                         class="form-check-input" type="radio" name="tipoBeneficio" id="id_{{i}}"
-                                        value="{{ben}}"
+                                        [value]="beneficio"
                                         [ngClass]="{ 'is-invalid': submitted && f.tipoBeneficio.errors }"
-                                        (click)="selected=i;beneficioEscolhido=ben">
+                                        (click)="selected=i;beneficioEscolhido=beneficio.descricao">
                                     <div [style.color]="selected==i?'#495057':'#aaaaaa'">
-                                        {{ ben }} </div>
+                                        {{ beneficio.descricao }} </div>
                                     <span class="circle">
                                         <span class="check"></span>
                                     </span>
@@ -143,7 +143,7 @@
                                 <i class="fas fa-comments faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <textarea [(ngModel)]="beneficio.observacao" formControlName="observacao" #obs autosize
+                        <textarea [(ngModel)]="reembolso.observacao" formControlName="observacao" #obs autosize
                             type="text" placeholder="Observações ..." class="form-control printWithoutBorder" autofocus
                             upperCase></textarea>
                     </div>
