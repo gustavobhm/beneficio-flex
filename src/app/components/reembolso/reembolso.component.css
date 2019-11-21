@@ -18994,6 +18994,10 @@ body{
   .alignCenter {
     text-align: center;
   }
+
+  .alignEnd {
+    text-align: end;
+  }
   
   .doNotDisplay {
     display: none !important;

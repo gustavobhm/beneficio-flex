@@ -1,0 +1,50 @@
+<div class="container">
+
+    <div class="card printMaxWidth">
+
+        <div class="card-header card-header-primary">
+            <h4 class="card-title">Benefício Flex</h4>
+            <span>Relatório das Solicitações de Reembolso</span>
+        </div>
+
+        <div class="card-body">
+
+            <form autocomplete="off">
+
+                <div class="row justify-content-center">
+                    <div class="input-group colFixedSize pt-3 pb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt faIconFixedSize fa-lg"></i>
+                            </span>
+                        </div>
+                        <input autofocus [(ngModel)]="rangeDate" name="rangeDate" id="rangeDate" type="text"
+                            placeholder="Data Inicial    -    Data Final" class="form-control alignCenter cursorPointer"
+                            [maxDate]="finalDate"
+                            [bsConfig]="{ showWeekNumbers:false, isAnimated: true, adaptivePosition: true }"
+                            (ngModelChange)="buildChart()"
+                            (keydown)="onKeydown($event)"
+                            bsDaterangepicker>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div #container></div>
+
+                <hr>
+
+                <div class="row ">
+                    <div class="col p-1 mr-3 alignEnd">
+                        <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
+                            alt="Responsive image" width="200">
+                    </div>
+                </div>                
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

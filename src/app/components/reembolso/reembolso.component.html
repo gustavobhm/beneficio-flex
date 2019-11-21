@@ -4,7 +4,7 @@
     <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '3px' }" [template]="customLoadingTemplate">
     </ngx-loading>
 
-    <div class="row p-4 justify-content-center printMaxWidth">
+    <div class="row p-4 justify-content-center printMaxWidth doNotDisplay print">
         <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
             alt="Responsive image" width="350">
     </div>
@@ -52,12 +52,12 @@
                                 <i class="fas fa-address-card faIconFixedSize fa-lg"></i>
                             </span>
                         </div>
-                        <select id="secao" [(ngModel)]="reembolso.secao" name="secao" formControlName="secao"
+                        <select id="secao" [(ngModel)]="reembolso.siglaSecao" name="secao" formControlName="secao"
                             class="form-control selectpicker printWithoutBorder selectedItem" data-style="btn btn-link"
                             [ngStyle]="{'color': newColor}" (change)="newColor='#495057'"
                             [ngClass]="{ 'is-invalid': submitted && f.secao.errors }">
                             <option value="" disabled selected hidden>Seção do solitante ...</option>
-                            <option *ngFor="let secao of secoes" [value]="secao.descricao">
+                            <option *ngFor="let secao of secoes" [ngValue]="secao.siglaSecao">
                                 {{secao.descricao}}
                             </option>
                         </select>
@@ -91,7 +91,7 @@
                             </span>
                         </div>
                         <input formControlName="data" name="data" id="data" [(ngModel)]="reembolso.data" type="text"
-                            class="form-control printWithoutBorder" value="{{reembolso.data | date:'dd/MM/yyyy'}}"  />
+                            class="form-control printWithoutBorder" value="{{reembolso.data | date:'dd/MM/yyyy'}}" />
                     </div>
                 </div>
 
@@ -103,7 +103,8 @@
                         <span class="greyColor pt-2 doNotPrint">
                             Tipo do benefício:
                             <div *ngIf="submitted && f.tipoBeneficio.errors" class="invalid-message">
-                                <div *ngIf="f.tipoBeneficio.errors.required">O tipo do benefício é obrigatório!</div>
+                                <div *ngIf="f.tipoBeneficio.errors.beneficioNotSelected">O tipo do benefício é
+                                    obrigatório!</div>
                             </div>
                         </span>
                         <span class="pt-2 doNotDisplay print darkColor">
@@ -160,10 +161,16 @@
 
                 <hr>
 
-                <div class="doNotPrint">
-                    <button type="submit" class="btn btn-success">SALVAR</button>
+                <div class="row ">
+                    <div class="col doNotPrint">
+                        <button type="submit" class="btn btn-success">SALVAR</button>
+                    </div>
+                    <div class="col p-1 mr-3 doNotPrint alignEnd">
+                        <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
+                            alt="Responsive image" width="200">
+                    </div>
                 </div>
-
+                
             </form>
 
         </div>

@@ -3,3 +3,9 @@
   -ms-filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=85) !important;
   filter: alpha(opacity=85) !important;
 }
+
+.highcharts-button.highcharts-drillup-button text tspan{
+  fill: rgb(102, 102, 102);
+  font-weight: bolder;
+  stroke-width: 5;
+}

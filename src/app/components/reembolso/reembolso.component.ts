@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Usuario } from 'src/usuario';
-import { Beneficio } from '../models/beneficio';
-import { BeneficioService } from '../services/beneficio.service';
-import { Reembolso } from '../models/reembolso';
-import { ReembolsoService } from '../services/reembolso.service';
-import { Secao } from '../models/secao';
-import { SecaoService } from '../services/secao.service';
-import { UsuarioService } from '../services/usuario.service';
+import { Beneficio } from '../../models/beneficio';
+import { Reembolso } from '../../models/reembolso';
+import { Secao } from '../../models/secao';
+import { BeneficioService } from '../../services/beneficio.service';
+import { ReembolsoService } from '../../services/reembolso.service';
+import { SecaoService } from '../../services/secao.service';
+import { UsuarioService } from '../../services/usuario.service';
 
 @Component({
   selector: 'app-reembolso',
@@ -19,6 +19,7 @@ import { UsuarioService } from '../services/usuario.service';
   styleUrls: ['./reembolso.component.css']
 })
 export class ReembolsoComponent implements OnInit {
+
 
   private reembolso: Reembolso = new Reembolso();
 
@@ -32,7 +33,7 @@ export class ReembolsoComponent implements OnInit {
 
   private registerForm: FormGroup;
 
-  private subject: Subject<string> = new Subject();
+  private filterUsuarios: Subject<string> = new Subject();
 
   private selected: number;
   private newColor: string;
@@ -53,7 +54,7 @@ export class ReembolsoComponent implements OnInit {
       secao: ['', Validators.required],
       data: [],
       valor: ['', [Validators.required, Validators.minLength(10)]],
-      tipoBeneficio: ['', Validators.required],
+      tipoBeneficio: ['', [this.beneficioValidator]],
       observacao: []
     });
 
@@ -72,12 +73,11 @@ export class ReembolsoComponent implements OnInit {
         data => this.beneficios = data,
         error => console.log(error));
 
-    this.subject.pipe(debounceTime(500))
+    this.filterUsuarios.pipe(debounceTime(500))
       .subscribe(
         nomeUsuario => {
           this.usuarios = nomeUsuario.length > 3 ? this.usuarioData.filter(v => v.nome.match(nomeUsuario)) : [];
         });
-
   }
 
   get f() { return this.registerForm.controls; }
@@ -86,7 +86,7 @@ export class ReembolsoComponent implements OnInit {
     this.submitted = true;
 
     if (this.registerForm.invalid)
-      //return;
+      return;
 
     this.print();
     this.save();
@@ -94,45 +94,42 @@ export class ReembolsoComponent implements OnInit {
     this.submitted = false;
   }
 
-  print() {
+  private print() {
     document.title = "Benefício Flex - Cremesp";
     window.print();
   }
 
-  save() {
+  private save() {
 
     this.loading = true;
-
-    //this.reembolso.secao = "TECNOLOGIA DA INFORMAÇÃO";
 
     this.reembolsoService.salvarReembolso(this.reembolso)
       .subscribe(
         data => {
-          console.log(data);
           this.toastr.success('', 'Solicitação de reembolso salva com sucesso!')
             .onHidden.subscribe(() => location.reload());
         },
         error => {
-          console.log(error);
           this.toastr.error(error.message, 'A solicitação de reembolso não foi salva!')
             .onHidden.subscribe(() => location.reload());
         }
       ).add(() => {
         this.resetForm();
       });
-
   }
 
-  resetForm() {
-    this.registerForm.reset();
-    this.reembolso.secao = "";
+  private resetForm() {
+    this.reembolso = new Reembolso();
     this.newColor = '#AAAAAA';
     this.selected = -1;
   }
 
-  listUsers(event: any) {
-    this.subject.next(event.target.value);
+  private listUsers(event: any) {
+    this.filterUsuarios.next(event.target.value);
   }
 
+  private beneficioValidator(control: FormControl): { [key: string]: boolean } | null {
+    return !control.value.descricao ? { 'beneficioNotSelected': true } : null;
+  }
 
 }

@@ -15,12 +15,15 @@ import { ToastrModule } from 'ngx-toastr';
 import { NgxUpperCaseDirectiveModule } from 'ngx-upper-case-directive';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AvisoComponent } from './aviso/aviso.component';
+import { AvisoComponent } from './components/aviso/aviso.component';
+import { ReembolsoComponent } from './components/reembolso/reembolso.component';
+import { ReportComponent } from './components/report/report.component';
 import { BeneficioService } from './services/beneficio.service';
-import { ReembolsoComponent } from './reembolso/reembolso.component';
 import { ReembolsoService } from './services/reembolso.service';
 import { SecaoService } from './services/secao.service';
 import { UsuarioService } from './services/usuario.service';
+import { ChartModule } from 'angular-highcharts';
+import { DatePipe } from '@angular/common';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -41,7 +44,8 @@ export const customCurrencyMaskConfig = {
   declarations: [
     AppComponent,
     ReembolsoComponent,
-    AvisoComponent
+    AvisoComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
@@ -71,13 +75,15 @@ export const customCurrencyMaskConfig = {
       secondaryColour: '#4caf50',
       tertiaryColour: '#4caf50',
       fullScreenBackdrop: true
-    })
+    }),
+    ChartModule
   ],
   providers: [
     BeneficioService,
     ReembolsoService,
     SecaoService,
-    UsuarioService
+    UsuarioService,
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })
