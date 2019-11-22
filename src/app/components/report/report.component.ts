@@ -4,7 +4,11 @@ import * as Highcharts from 'highcharts';
 import More from 'highcharts/highcharts-more';
 import Drilldown from 'highcharts/modules/drilldown';
 import Exporting from 'highcharts/modules/exporting';
+import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
+import { DataPieChartView } from 'src/app/models/dataPieChartView';
+import { ReportService } from 'src/app/services/report.service';
 
+NoDataToDisplay(Highcharts);
 More(Highcharts);
 Drilldown(Highcharts);
 Exporting(Highcharts);
@@ -18,11 +22,18 @@ export class ReportComponent implements OnInit {
 
   @ViewChild("container", { read: ElementRef, static: true }) container: ElementRef;
 
-  initialDate: Date = new Date();
-  finalDate: Date = new Date();
-  rangeDate: Date[];
+  private initialDate: Date = new Date();
+  private finalDate: Date = new Date();
+  private rangeDate: Date[];
 
-  constructor(private datepipe: DatePipe) { }
+  private formatedInitialDate: string;
+  private formatedFinalDate: string;
+
+  private pieData: DataPieChartView[] = [];
+
+  constructor(
+    private reportService: ReportService,
+    private datepipe: DatePipe) { }
 
   ngOnInit() {
 
@@ -55,17 +66,24 @@ export class ReportComponent implements OnInit {
         rangeSelectorZoom: 'Zoom',
         resetZoom: 'Limpar Zoom',
         resetZoomTitle: 'Voltar Zoom para nível 1:1',
-        drillUpText: '<< voltar'
+        drillUpText: '<< voltar',
+        noData: 'Sem dados para o período!'
       }
     });
   }
 
-  buildChart() {
-    Highcharts.chart(
-      this.container.nativeElement, {
-      colors: 
-        /*['#7cb5ec', '#f7a35c', '#90ee7e', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],*/
-        ['#e6194b', '#3cb44b',  '#4363d8', '#f58231', '#911eb4', '#40dbdb', '#f032e6', '#dbc218','#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'],
+  async buildChart() {
+
+    this.formatedInitialDate = this.datepipe.transform(this.rangeDate[0], 'dd/MM/yyyy');
+    this.formatedFinalDate = this.datepipe.transform(this.rangeDate[1], 'dd/MM/yyyy');
+    this.pieData = await this.reportService.getDataForPieChartBy(this.formatedInitialDate, this.formatedFinalDate);
+
+    Highcharts.chart(this.container.nativeElement, {
+      colors:
+        //['#7cb5ec', '#f7a35c', '#90ee7e', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
+        ['#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#40dbdb', '#f032e6', '#dbc218', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'],
+        //'#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'
+        //['rgb(230, 25, 75, 0.7)', 'rgb(60, 180, 75, 0.7)', 'rgb(67, 99, 216, 0.7)', 'rgb(245, 130, 49, 0.7)', 'rgb(145, 30, 180, 0.7)', 'rgb(64, 219, 219, 0.7)', 'rgb(240, 50, 230, 0.7)', 'rgb(219, 194, 24, 0.7)', 'rgb(188, 246, 12, 0.7)', 'rgb(250, 190, 190, 0.7)', 'rgb(0, 128, 128, 0.7)'],
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
@@ -77,7 +95,7 @@ export class ReportComponent implements OnInit {
         text: ''
       },
       subtitle: {
-        text: 'Quantidade de solicitações no período de ' + this.datepipe.transform(this.rangeDate[0], 'dd/MM/yyyy') + ' à ' + this.datepipe.transform(this.rangeDate[1], 'dd/MM/yyyy') + '.',
+        text: 'Quantidade de solicitações no período de ' + this.formatedInitialDate + ' à ' + this.formatedFinalDate + '.',
         y: 17
       },
       credits: {
@@ -91,10 +109,24 @@ export class ReportComponent implements OnInit {
         pointFormat: '<span style="color:{point.color};font-size:11px;font-weight: bold;">{point.y} Solicitações de Reembolso.</span>'
       },
       xAxis: {
+        type: 'category',
         showEmpty: false
       },
       yAxis: {
+        title: {
+          text: 'Solicitações de Reembolso'
+        },
+        //minorGridLineWidth: 1,
+        //gridLineWidth: 1,
+        //alternateGridColor: 'rgb(240,240,240,0.1)',
         showEmpty: false
+      },
+      legend: {
+        enabled: true,
+        itemStyle: {
+          color: 'rgb(102, 102, 102)',
+          fontWeight: '500'
+        }
       },
       plotOptions: {
         series: {
@@ -102,12 +134,16 @@ export class ReportComponent implements OnInit {
           dataLabels: {
             enabled: true,
             //format: '{point.name}: {point.y:.1f}%'
+            format: '<span style="color:{point.color};font-size:11px;font-weight: bold;">{point.y}</span>'
           },
           events: {
             click: (event) => {
               //alert('you clicked something' + event);
               console.log(event.point.options.name);
             },
+            legendItemClick: (event) => {
+              event.preventDefault();
+            }
           }
         },
         pie: {
@@ -122,40 +158,8 @@ export class ReportComponent implements OnInit {
       },
       series: [{
         type: undefined,
-        name: 'Quantidade de solicitações',
-        data: [{
-          name: 'Despesas não cobertas por Plano Odontológico.',
-          drilldown: "Despesas não cobertas por Plano Odontológico.",
-          y: 100
-        }, {
-          name: 'Despesas não cobertas pelo Plano de Saúde.',
-          drilldown: 'Despesas não cobertas pelo Plano de Saúde.',
-          y: 85
-        }, {
-          name: 'Medicamentos.',
-          drilldown: 'Medicamentos.',
-          y: 44
-        }, {
-          name: 'Óculos e lentes de contato.',
-          drilldown: 'Óculos e lentes de contato.',
-          y: 33
-        }, {
-          name: 'Academia.',
-          drilldown: 'Academia.',
-          y: 20
-        }, {
-          name: 'Idiomas.',
-          drilldown: 'Idiomas.',
-          y: 10
-        }, {
-          name: 'Educação e Cultura.',
-          drilldown: 'Educação e Cultura.',
-          y: 5
-        }, {
-          name: 'Filhos Recém Nascidos (De 0 até 2 anos).',
-          drilldown: 'Filhos Recém Nascidos (De 0 até 2 anos).',
-          y: 2
-        }]
+        /*name: 'Quantidade de solicitações',*/
+        data: this.pieData
       }],
       drilldown: {
         activeDataLabelStyle: {
@@ -182,41 +186,25 @@ export class ReportComponent implements OnInit {
             }
           }
         },
-        series: [{
-          type: 'column',
-          name: "Despesas não cobertas por Plano Odontológico.",
-          id: "Despesas não cobertas por Plano Odontológico.",
-          data: [
-            [
-              "v65.0",
-              0.1
-            ],
-            [
-              "v64.0",
-              1.3
-            ],
-            [
-              "v63.0",
-              53.02
-            ],
-            [
-              "v62.0",
-              1.4
-            ],
-            [
-              "v61.0",
-              0.88
-            ],
-            [
-              "v60.0",
-              0.56
-            ],
-            [
-              "v59.0",
-              0.45
+        series: [
+          {
+            type: 'column',
+            name: "Despesas não cobertas por Plano Odontológico.",
+            id: "Despesas não cobertas por Plano Odontológico.",
+            data: [
+              ["19/11/2019", 1]
             ]
-          ]
-        }]
+          },
+          {
+            type: 'column',
+            name: "Educação e Cultura.",
+            id: "Educação e Cultura.",
+            data: [
+              ["18/11/2019", 5],
+              ["19/11/2019", 4]
+            ]
+          }
+        ]
       }
     });
   }

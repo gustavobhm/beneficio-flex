@@ -24,6 +24,7 @@ import { SecaoService } from './services/secao.service';
 import { UsuarioService } from './services/usuario.service';
 import { ChartModule } from 'angular-highcharts';
 import { DatePipe } from '@angular/common';
+import { ReportService } from './services/report.service';
 
 defineLocale('pt-br', ptBrLocale);
 
@@ -83,6 +84,7 @@ export const customCurrencyMaskConfig = {
     ReembolsoService,
     SecaoService,
     UsuarioService,
+    ReportService,
     DatePipe
   ],
   bootstrap: [AppComponent]
