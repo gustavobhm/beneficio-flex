@@ -5,7 +5,8 @@ import * as Highcharts from "highcharts/highstock";
 import Drilldown from 'highcharts/modules/drilldown';
 import Exporting from 'highcharts/modules/exporting';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
-import { DataPieChartView } from 'src/app/models/dataPieChartView';
+import { DataChartSerie } from 'src/app/models/dataChartSerie';
+import { DrilldownSerie } from 'src/app/models/drilldownSerie';
 import { ReportService } from 'src/app/services/report.service';
 
 NoDataToDisplay(Highcharts);
@@ -29,20 +30,18 @@ export class ReportComponent implements OnInit {
   private formatedInitialDate: string;
   private formatedFinalDate: string;
 
-  private chart: Highcharts.Chart;
+  private dataChartSeries: DataChartSerie[];
+  private dataDrilldownSeries: DrilldownSerie[];
 
   constructor(
     private reportService: ReportService,
     private datepipe: DatePipe) { }
 
   ngOnInit() {
-
     this.initialDate.setMonth(this.initialDate.getMonth() - 3);
     this.rangeDate = [this.initialDate, this.finalDate];
-
     this.configChart();
     this.buildChart();
-
   }
 
   private configChart() {
@@ -74,22 +73,16 @@ export class ReportComponent implements OnInit {
 
   private async buildChart() {
 
-    this.formatedInitialDate = this.datepipe.transform(this.rangeDate[0], 'dd/MM/yyyy');
-    this.formatedFinalDate = this.datepipe.transform(this.rangeDate[1], 'dd/MM/yyyy');
-    const pieData = await this.reportService.getDataForPieChartBy(this.formatedInitialDate, this.formatedFinalDate);
-    this.createDrilldown(pieData);
+    await this.updateDataForChartAndDrilldown();
 
-    this.chart = Highcharts.chart(this.container.nativeElement, {
+    Highcharts.chart(this.container.nativeElement, {
       colors: ['#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#40dbdb', '#f032e6', '#dbc218', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'],
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
         plotShadow: false,
         type: 'pie',
-        marginTop: 65,
-        events: {
-          drilldown: (event) => { }
-        }
+        marginTop: 65
       },
       title: {
         text: ''
@@ -117,6 +110,9 @@ export class ReportComponent implements OnInit {
         title: {
           text: 'Solicitações de Reembolso'
         },
+        labels: {
+          enabled: false
+        },
         showEmpty: false
       },
       legend: {
@@ -137,11 +133,6 @@ export class ReportComponent implements OnInit {
           dataLabels: {
             enabled: true,
             format: '<span style="color:{point.color};font-size:11px;font-weight: bold;">{point.y}</span>'
-          },
-          events: {
-            legendItemClick: (event) => {
-              event.preventDefault();
-            }
           }
         },
         pie: {
@@ -157,9 +148,10 @@ export class ReportComponent implements OnInit {
       series: [{
         type: 'pie',
         name: 'Solicitações Reembolso',
-        data: pieData
+        data: this.dataChartSeries
       }],
       drilldown: {
+        series: this.dataDrilldownSeries,
         activeDataLabelStyle: {
           textDecoration: 'none'
         },
@@ -188,32 +180,24 @@ export class ReportComponent implements OnInit {
     });
   }
 
-  private async createDrilldown(pieData: DataPieChartView[]) {
-
-    var drilldownList: string = '[';
-
-    for (const piece of pieData) {
-
-      const drilldownData = await this.reportService.getDataForDrilldownChartBy(this.formatedInitialDate, this.formatedFinalDate, piece.name);
-
-      drilldownList += '{' +
-        '"type": "line",' +
-        `"name": "${piece.name}",` +
-        `"id": "${piece.name}",` +
-        `"data": ${JSON.stringify(drilldownData)} },`;
-    }
-
-    drilldownList = drilldownList.replace(/,$/, "]");
-
-    this.updateChart(drilldownList);
+  private async updateDataForChartAndDrilldown() {
+    this.formatedInitialDate = this.datepipe.transform(this.rangeDate[0], 'dd/MM/yyyy');
+    this.formatedFinalDate = this.datepipe.transform(this.rangeDate[1], 'dd/MM/yyyy');
+    this.dataChartSeries = await this.reportService.getDataChartSeriesBy(this.formatedInitialDate, this.formatedFinalDate);
+    this.dataDrilldownSeries = await this.getDataForDrilldownSeries(this.dataChartSeries);
   }
 
-  private updateChart(drilldownList: string) {
-    this.chart.update({
-      drilldown: {
-        series: JSON.parse(drilldownList)
-      }
-    });
+  private async getDataForDrilldownSeries(pieData: DataChartSerie[]) {
+
+    let drilldownSeries: DrilldownSerie[] = [];
+
+    for (const piece of pieData) {
+      const drilldownData = await this.reportService.getDataDrilldownSeriesBy(this.formatedInitialDate, this.formatedFinalDate, piece.name);
+      const drilldownSerie = new DrilldownSerie('line', piece.name, piece.name, drilldownData);
+      drilldownSeries.push(drilldownSerie);
+    }
+
+    return drilldownSeries;
   }
 
   onKeydown(event: KeyboardEvent) {

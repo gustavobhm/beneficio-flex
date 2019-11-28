@@ -20,7 +20,6 @@ import { UsuarioService } from '../../services/usuario.service';
 })
 export class ReembolsoComponent implements OnInit {
 
-
   private reembolso: Reembolso = new Reembolso();
 
   private usuarioData: Usuario[] = [];
