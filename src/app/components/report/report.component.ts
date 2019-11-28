@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import * as Highcharts from 'highcharts';
 import More from 'highcharts/highcharts-more';
+import * as Highcharts from "highcharts/highstock";
 import Drilldown from 'highcharts/modules/drilldown';
 import Exporting from 'highcharts/modules/exporting';
 import NoDataToDisplay from 'highcharts/modules/no-data-to-display';
@@ -29,7 +29,7 @@ export class ReportComponent implements OnInit {
   private formatedInitialDate: string;
   private formatedFinalDate: string;
 
-  private pieData: DataPieChartView[] = [];
+  private chart: Highcharts.Chart;
 
   constructor(
     private reportService: ReportService,
@@ -40,12 +40,12 @@ export class ReportComponent implements OnInit {
     this.initialDate.setMonth(this.initialDate.getMonth() - 3);
     this.rangeDate = [this.initialDate, this.finalDate];
 
-    this.chartConfig();
+    this.configChart();
     this.buildChart();
 
   }
 
-  chartConfig() {
+  private configChart() {
     Highcharts.setOptions({
       lang: {
         months: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
@@ -72,24 +72,24 @@ export class ReportComponent implements OnInit {
     });
   }
 
-  async buildChart() {
+  private async buildChart() {
 
     this.formatedInitialDate = this.datepipe.transform(this.rangeDate[0], 'dd/MM/yyyy');
     this.formatedFinalDate = this.datepipe.transform(this.rangeDate[1], 'dd/MM/yyyy');
-    this.pieData = await this.reportService.getDataForPieChartBy(this.formatedInitialDate, this.formatedFinalDate);
+    const pieData = await this.reportService.getDataForPieChartBy(this.formatedInitialDate, this.formatedFinalDate);
+    this.createDrilldown(pieData);
 
-    Highcharts.chart(this.container.nativeElement, {
-      colors:
-        //['#7cb5ec', '#f7a35c', '#90ee7e', '#7798BF', '#aaeeee', '#ff0066', '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'],
-        ['#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#40dbdb', '#f032e6', '#dbc218', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'],
-        //'#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'
-        //['rgb(230, 25, 75, 0.7)', 'rgb(60, 180, 75, 0.7)', 'rgb(67, 99, 216, 0.7)', 'rgb(245, 130, 49, 0.7)', 'rgb(145, 30, 180, 0.7)', 'rgb(64, 219, 219, 0.7)', 'rgb(240, 50, 230, 0.7)', 'rgb(219, 194, 24, 0.7)', 'rgb(188, 246, 12, 0.7)', 'rgb(250, 190, 190, 0.7)', 'rgb(0, 128, 128, 0.7)'],
+    this.chart = Highcharts.chart(this.container.nativeElement, {
+      colors: ['#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#40dbdb', '#f032e6', '#dbc218', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'],
       chart: {
         plotBackgroundColor: null,
         plotBorderWidth: null,
         plotShadow: false,
         type: 'pie',
-        marginTop: 65
+        marginTop: 65,
+        events: {
+          drilldown: (event) => { }
+        }
       },
       title: {
         text: ''
@@ -102,23 +102,21 @@ export class ReportComponent implements OnInit {
         enabled: false
       },
       tooltip: {
-        //pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-        //headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
         headerFormat: '',
-        //pointFormat: '<span style="color:{point.color};font-size:11px;">{point.name}</span><br><span style="font-size:11px;">{point.y} solicitações.</span>'
         pointFormat: '<span style="color:{point.color};font-size:11px;font-weight: bold;">{point.y} Solicitações de Reembolso.</span>'
       },
       xAxis: {
         type: 'category',
-        showEmpty: false
+        showEmpty: false,
+        labels: {
+          rotation: -60
+        }
       },
       yAxis: {
+        minTickInterval: 1,
         title: {
           text: 'Solicitações de Reembolso'
         },
-        //minorGridLineWidth: 1,
-        //gridLineWidth: 1,
-        //alternateGridColor: 'rgb(240,240,240,0.1)',
         showEmpty: false
       },
       legend: {
@@ -130,17 +128,17 @@ export class ReportComponent implements OnInit {
       },
       plotOptions: {
         series: {
+          marker: {
+            symbol: 'circle',
+            radius: 5
+          },
+          lineWidth: 3,
           opacity: 0.7,
           dataLabels: {
             enabled: true,
-            //format: '{point.name}: {point.y:.1f}%'
             format: '<span style="color:{point.color};font-size:11px;font-weight: bold;">{point.y}</span>'
           },
           events: {
-            click: (event) => {
-              //alert('you clicked something' + event);
-              console.log(event.point.options.name);
-            },
             legendItemClick: (event) => {
               event.preventDefault();
             }
@@ -157,9 +155,9 @@ export class ReportComponent implements OnInit {
         }
       },
       series: [{
-        type: undefined,
-        /*name: 'Quantidade de solicitações',*/
-        data: this.pieData
+        type: 'pie',
+        name: 'Solicitações Reembolso',
+        data: pieData
       }],
       drilldown: {
         activeDataLabelStyle: {
@@ -182,34 +180,43 @@ export class ReportComponent implements OnInit {
               hover: {
                 fill: 'rgb(76,175,80,0.1)',
                 stroke: 'rgb(76,175,80)'
-              },
+              }
             }
           }
-        },
-        series: [
-          {
-            type: 'column',
-            name: "Despesas não cobertas por Plano Odontológico.",
-            id: "Despesas não cobertas por Plano Odontológico.",
-            data: [
-              ["19/11/2019", 1]
-            ]
-          },
-          {
-            type: 'column',
-            name: "Educação e Cultura.",
-            id: "Educação e Cultura.",
-            data: [
-              ["18/11/2019", 5],
-              ["19/11/2019", 4]
-            ]
-          }
-        ]
+        }
       }
     });
   }
 
-  onKeydown(event) {
+  private async createDrilldown(pieData: DataPieChartView[]) {
+
+    var drilldownList: string = '[';
+
+    for (const piece of pieData) {
+
+      const drilldownData = await this.reportService.getDataForDrilldownChartBy(this.formatedInitialDate, this.formatedFinalDate, piece.name);
+
+      drilldownList += '{' +
+        '"type": "line",' +
+        `"name": "${piece.name}",` +
+        `"id": "${piece.name}",` +
+        `"data": ${JSON.stringify(drilldownData)} },`;
+    }
+
+    drilldownList = drilldownList.replace(/,$/, "]");
+
+    this.updateChart(drilldownList);
+  }
+
+  private updateChart(drilldownList: string) {
+    this.chart.update({
+      drilldown: {
+        series: JSON.parse(drilldownList)
+      }
+    });
+  }
+
+  onKeydown(event: KeyboardEvent) {
     event.preventDefault();
   }
 
