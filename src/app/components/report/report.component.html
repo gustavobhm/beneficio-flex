@@ -22,24 +22,26 @@
                             placeholder="Data Inicial    -    Data Final" class="form-control alignCenter cursorPointer"
                             [maxDate]="finalDate"
                             [bsConfig]="{ showWeekNumbers:false, isAnimated: true, adaptivePosition: true }"
-                            (ngModelChange)="buildChart()"
-                            (keydown)="onKeydown($event)"
-                            bsDaterangepicker>
+                            (ngModelChange)="buildChart()" (keydown)="onKeydown($event)" bsDaterangepicker>
                     </div>
                 </div>
 
                 <hr>
 
-                <div #container></div>
+                <div #highchart></div>
 
                 <hr>
 
                 <div class="row ">
+                    <div class="col">
+                        <a href="https://www.cremesp.org.br/restrito/v2005/index.php?payAnd=Principal"
+                            class="btn" role="button" aria-disabled="true">VOLTAR</a>
+                    </div>
                     <div class="col p-1 mr-3 alignEnd">
                         <img src="http://www.cremesp.org.br/Templates/v201108/images/logo2018.png" class="img-fluid"
                             alt="Responsive image" width="200">
                     </div>
-                </div>                
+                </div>
 
             </form>
 

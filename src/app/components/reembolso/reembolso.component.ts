@@ -30,7 +30,7 @@ export class ReembolsoComponent implements OnInit {
   private submitted: boolean = false;
   private loading: boolean = false;
 
-  private registerForm: FormGroup;
+  private reembolsoForm: FormGroup;
 
   private filterUsuarios: Subject<string> = new Subject();
 
@@ -43,18 +43,17 @@ export class ReembolsoComponent implements OnInit {
     private usuarioService: UsuarioService,
     private beneficioService: BeneficioService,
     private formBuilder: FormBuilder,
-    private toastr: ToastrService,
-    private router: Router) { }
+    private toastr: ToastrService) { }
 
   ngOnInit() {
 
-    this.registerForm = this.formBuilder.group({
+    this.reembolsoForm = this.formBuilder.group({
       solicitante: ['', [Validators.required, Validators.minLength(3)]],
       secao: ['', Validators.required],
-      data: [],
+      data: [''],
       valor: ['', [Validators.required, Validators.minLength(10)]],
       tipoBeneficio: ['', [this.beneficioValidator]],
-      observacao: []
+      observacao: ['']
     });
 
     this.secaoService.listarSecoes()
@@ -79,12 +78,12 @@ export class ReembolsoComponent implements OnInit {
         });
   }
 
-  get f() { return this.registerForm.controls; }
+  get f() { return this.reembolsoForm.controls; }
 
   onSubmit() {
     this.submitted = true;
 
-    if (this.registerForm.invalid)
+    if (this.reembolsoForm.invalid)
       return;
 
     this.print();
@@ -106,7 +105,7 @@ export class ReembolsoComponent implements OnInit {
       .subscribe(
         data => {
           this.toastr.success('', 'Solicitação de reembolso salva com sucesso!')
-            .onHidden.subscribe(() => location.reload());
+            .onHidden.subscribe(() => window.location.href = 'http://www.cremesp.org.br/?siteAcao=Pessoal');
         },
         error => {
           this.toastr.error(error.message, 'A solicitação de reembolso não foi salva!')
@@ -123,7 +122,7 @@ export class ReembolsoComponent implements OnInit {
     this.selected = -1;
   }
 
-  private listUsers(event: any) {
+  listUsers(event: any) {
     this.filterUsuarios.next(event.target.value);
   }
 

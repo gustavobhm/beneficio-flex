@@ -21,7 +21,7 @@ Exporting(Highcharts);
 })
 export class ReportComponent implements OnInit {
 
-  @ViewChild("container", { read: ElementRef, static: true }) container: ElementRef;
+  @ViewChild("highchart", { read: ElementRef, static: true }) container: ElementRef;
 
   private initialDate: Date = new Date();
   private finalDate: Date = new Date();
@@ -65,17 +65,9 @@ export class ReportComponent implements OnInit {
         rangeSelectorZoom: 'Zoom',
         resetZoom: 'Limpar Zoom',
         resetZoomTitle: 'Voltar Zoom para nível 1:1',
-        drillUpText: '<< voltar',
+        drillUpText: '<<',
         noData: 'Sem dados para o período!'
-      }
-    });
-  }
-
-  private async buildChart() {
-
-    await this.updateDataForChartAndDrilldown();
-
-    Highcharts.chart(this.container.nativeElement, {
+      },
       colors: ['#e6194b', '#3cb44b', '#4363d8', '#f58231', '#911eb4', '#40dbdb', '#f032e6', '#dbc218', '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080', '#ffffff', '#000000'],
       chart: {
         plotBackgroundColor: null,
@@ -86,10 +78,6 @@ export class ReportComponent implements OnInit {
       },
       title: {
         text: ''
-      },
-      subtitle: {
-        text: 'Quantidade de solicitações no período de ' + this.formatedInitialDate + ' à ' + this.formatedFinalDate + '.',
-        y: 17
       },
       credits: {
         enabled: false
@@ -110,9 +98,6 @@ export class ReportComponent implements OnInit {
         title: {
           text: 'Solicitações de Reembolso'
         },
-        labels: {
-          enabled: false
-        },
         showEmpty: false
       },
       legend: {
@@ -130,28 +115,22 @@ export class ReportComponent implements OnInit {
           },
           lineWidth: 3,
           opacity: 0.7,
-          dataLabels: {
-            enabled: true,
-            format: '<span style="color:{point.color};font-size:11px;font-weight: bold;">{point.y}</span>'
+          cursor: 'pointer',
+          events: {
+            legendItemClick: () => { return false; }
           }
         },
         pie: {
           allowPointSelect: true,
           cursor: 'pointer',
-          borderWidth: 3,
-          dataLabels: {
-            enabled: true,
-            format: '<span style="font-size:10px;color:{point.color};font-weight:500;">{point.name} {point.percentage:.1f} % </span>'
-          }
+          borderWidth: 3
         }
       },
       series: [{
         type: 'pie',
-        name: 'Solicitações Reembolso',
-        data: this.dataChartSeries
+        name: 'Solicitações Reembolso'
       }],
       drilldown: {
-        series: this.dataDrilldownSeries,
         activeDataLabelStyle: {
           textDecoration: 'none'
         },
@@ -180,7 +159,33 @@ export class ReportComponent implements OnInit {
     });
   }
 
-  private async updateDataForChartAndDrilldown() {
+  private async buildChart() {
+
+    await this.updateDataSeriesForChartAndDrilldown();
+
+    Highcharts.chart(this.container.nativeElement, {
+      subtitle: {
+        text: 'Quantidade de solicitações no período de ' + this.formatedInitialDate + ' à ' + this.formatedFinalDate + '.',
+        y: 17
+      },
+      plotOptions: {
+        pie: {
+          dataLabels: {
+            format: '<span style="font-size:10px;color:{point.color};font-weight:500;">{point.name} {point.percentage:.1f} % </span>'
+          }
+        }
+      },
+      series: [{
+        type: 'pie',
+        data: this.dataChartSeries
+      }],
+      drilldown: {
+        series: this.dataDrilldownSeries
+      }
+    });
+  }
+
+  private async updateDataSeriesForChartAndDrilldown() {
     this.formatedInitialDate = this.datepipe.transform(this.rangeDate[0], 'dd/MM/yyyy');
     this.formatedFinalDate = this.datepipe.transform(this.rangeDate[1], 'dd/MM/yyyy');
     this.dataChartSeries = await this.reportService.getDataChartSeriesBy(this.formatedInitialDate, this.formatedFinalDate);
