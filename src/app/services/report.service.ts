@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { DataDrillDownSerie } from '../models/dataDrillDownSerie';
 import { DataChartSerie } from '../models/dataChartSerie';
 
-//const API = 'http://dk01.cremesp.org.br:100??/report';
-const API = 'http://localhost:1521/report';
+const API = 'http://api.cremesp.org.br:8000/beneficio-flex/report';
 
 @Injectable({ providedIn: 'root' })
 export class ReportService {

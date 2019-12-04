@@ -79,6 +79,9 @@ export class ReportComponent implements OnInit {
       title: {
         text: ''
       },
+      subtitle: {
+        y: 17
+      },
       credits: {
         enabled: false
       },
@@ -166,7 +169,6 @@ export class ReportComponent implements OnInit {
     Highcharts.chart(this.container.nativeElement, {
       subtitle: {
         text: 'Quantidade de solicitações no período de ' + this.formatedInitialDate + ' à ' + this.formatedFinalDate + '.',
-        y: 17
       },
       plotOptions: {
         pie: {

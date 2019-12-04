@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -12,6 +11,8 @@ import { BeneficioService } from '../../services/beneficio.service';
 import { ReembolsoService } from '../../services/reembolso.service';
 import { SecaoService } from '../../services/secao.service';
 import { UsuarioService } from '../../services/usuario.service';
+
+const CREMESP_ADDRESS: string = 'http://www.cremesp.org.br/?siteAcao=Pessoal';
 
 @Component({
   selector: 'app-reembolso',
@@ -105,7 +106,7 @@ export class ReembolsoComponent implements OnInit {
       .subscribe(
         data => {
           this.toastr.success('', 'Solicitação de reembolso salva com sucesso!')
-            .onHidden.subscribe(() => window.location.href = 'http://www.cremesp.org.br/?siteAcao=Pessoal');
+            .onHidden.subscribe(() => window.location.href = CREMESP_ADDRESS);
         },
         error => {
           this.toastr.error(error.message, 'A solicitação de reembolso não foi salva!')
