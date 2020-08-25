@@ -29,7 +29,7 @@
     "bootstrap": "^4.1.3",
     "chart.js": "^2.5.0",
     "hammerjs": "^2.0.8",
-    "highcharts": "^7.2.1",
+    "highcharts": "^7.2.2",
     "jquery": "^3.4.1",
     "ng2-input-autocomplete": "^1.1.2",
     "ngx-autosize": "^1.6.4",
